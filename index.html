@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <title>full-free-proxy</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #0D9488;
+            --primary-light: #5EEAD4;
+            --primary-dark: #0F766E;
+            --primary-bg-light: #CCFBF1;
+            --primary-bg-hover: #F0FDFA;
+            --bg: #F1F5F9;
+            --card-bg: #FFFFFF;
+            --text: #0F172A;
+            --text-secondary: #475569;
+            --border: #E2E8F0;
+            --shadow: 0 4px 20px rgba(13, 148, 136, 0.10);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --http-color: #2563EB;
+            --http-bg: #DBEAFE;
+            --https-color: #059669;
+            --https-bg: #D1FAE5;
+            --socks4-color: #D97706;
+            --socks4-bg: #FEF3C7;
+            --socks5-color: #7C3AED;
+            --socks5-bg: #EDE9FE;
+            --success: #10B981;
+        }
+
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin: 0;
+        }
+
+        .app {
+            max-width: 1100px;
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 28px 30px 40px;
+        }
+
+        .header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            gap: 12px;
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .header-left h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.3px;
+        }
+
+        .header-left .subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .lang-switch {
+            display: flex;
+            gap: 4px;
+            background: var(--bg);
+            padding: 4px;
+            border-radius: 30px;
+        }
+        .lang-switch button {
+            border: none;
+            background: transparent;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: 0.2s;
+        }
+        .lang-switch button.active {
+            background: white;
+            color: var(--text);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+        .lang-switch button:hover:not(.active) {
+            color: var(--primary);
+        }
+
+        .total-badge {
+            background: var(--bg);
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        .total-badge span {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* Кнопка переключения фильтров */
+        .toggle-filters-btn {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: 0.2s;
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .toggle-filters-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-bg-hover);
+        }
+        .toggle-filters-btn .icon {
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px 18px;
+            margin-bottom: 20px;
+            background: var(--bg);
+            padding: 14px 18px;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .filters-hidden {
+            display: none !important;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 12px;
+        }
+
+        .filter-group .label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--text-secondary);
+            margin-right: 4px;
+        }
+
+        .proto-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            user-select: none;
+            padding: 4px 12px 4px 8px;
+            border-radius: 30px;
+            background: white;
+            border: 1px solid var(--border);
+            transition: 0.2s;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        .proto-toggle:hover {
+            border-color: var(--primary-light);
+        }
+        .proto-toggle input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .proto-toggle .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+        .proto-toggle.active {
+            border-color: var(--primary);
+            background: var(--primary-bg-light);
+        }
+        .proto-toggle .proto-name {
+            font-weight: 600;
+        }
+
+        .search-wrap {
+            flex: 1;
+            min-width: 180px;
+            position: relative;
+        }
+        .search-wrap input {
+            width: 100%;
+            padding: 8px 16px 8px 36px;
+            border-radius: 40px;
+            border: 1px solid var(--border);
+            background: white;
+            font-size: 0.9rem;
+            outline: none;
+            transition: 0.2s;
+            color: var(--text);
+        }
+        .search-wrap input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+        }
+        .search-wrap .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .actions button {
+            background: none;
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: 0.2s;
+            background: white;
+        }
+        .actions button:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-bg-hover);
+        }
+        .actions button.primary-btn {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .actions button.primary-btn:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        .list-container {
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            background: white;
+        }
+
+        .list-header {
+            display: grid;
+            grid-template-columns: 1fr 120px 80px;
+            padding: 12px 18px;
+            background: var(--bg);
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+            gap: 6px;
+        }
+        .list-header .col-proto {
+            text-align: center;
+        }
+        .list-header .col-copy {
+            text-align: right;
+        }
+
+        .proxy-list {
+            max-height: 600px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+        .proxy-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .proxy-list::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 10px;
+        }
+        .proxy-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .proxy-item {
+            display: grid;
+            grid-template-columns: 1fr 120px 80px;
+            padding: 8px 18px;
+            border-bottom: 1px solid var(--border);
+            align-items: center;
+            gap: 6px;
+            transition: 0.15s;
+            font-size: 0.9rem;
+        }
+        .proxy-item:last-child {
+            border-bottom: none;
+        }
+        .proxy-item:hover {
+            background: var(--primary-bg-hover);
+        }
+
+        .proxy-item .address {
+            font-family: 'SF Mono', 'JetBrains Mono', 'Fira Code', monospace;
+            font-weight: 500;
+            letter-spacing: -0.2px;
+            word-break: break-all;
+        }
+
+        .protocol-badge {
+            justify-self: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 12px;
+            border-radius: 40px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        .protocol-badge.http {
+            background: var(--http-bg);
+            color: var(--http-color);
+        }
+        .protocol-badge.https {
+            background: var(--https-bg);
+            color: var(--https-color);
+        }
+        .protocol-badge.socks4 {
+            background: var(--socks4-bg);
+            color: var(--socks4-color);
+        }
+        .protocol-badge.socks5 {
+            background: var(--socks5-bg);
+            color: var(--socks5-color);
+        }
+
+        .copy-btn {
+            justify-self: end;
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 2px 14px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .copy-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-bg-hover);
+        }
+        .copy-btn.copied {
+            border-color: var(--success);
+            color: var(--success);
+            background: #D1FAE5;
+        }
+
+        .empty-state {
+            padding: 50px 20px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .loading-overlay {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 0;
+            gap: 14px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        .spinner {
+            width: 28px;
+            height: 28px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .pagination {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 8px 12px;
+            padding: 14px 18px;
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+        .pagination button {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .pagination button:hover:not(:disabled) {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-bg-hover);
+        }
+        .pagination button:disabled {
+            opacity: 0.4;
+            cursor: default;
+        }
+        .pagination .page-info {
+            font-weight: 500;
+            color: var(--text);
+            padding: 0 6px;
+        }
+        .pagination .page-numbers {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .pagination .page-numbers button {
+            min-width: 32px;
+            padding: 2px 6px;
+            text-align: center;
+        }
+        .pagination .page-numbers button.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .footer {
+            margin-top: 28px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #0F172A;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: all 0.35s ease;
+            pointer-events: none;
+            z-index: 999;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast.success {
+            background: #065F46;
+        }
+        .toast.error {
+            background: #991B1B;
+        }
+
+        /* ===== Мобильная оптимизация ===== */
+        @media (max-width: 820px) {
+            .app {
+                padding: 18px 16px 28px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            .header-left h1 {
+                font-size: 1.6rem;
+                text-align: center;
+            }
+            .header-left .subtitle {
+                text-align: center;
+                font-size: 1rem;
+            }
+            .header-right {
+                justify-content: center;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+            .total-badge {
+                font-size: 0.95rem;
+                padding: 6px 18px;
+            }
+            .toggle-filters-btn {
+                font-size: 0.9rem;
+                padding: 8px 16px;
+            }
+
+            .filters {
+                flex-direction: column;
+                align-items: center;
+                gap: 14px;
+                padding: 16px 14px;
+            }
+            .filter-group {
+                justify-content: center;
+                gap: 8px 14px;
+            }
+            .filter-group .label {
+                font-size: 0.85rem;
+                margin-right: 0;
+                width: 100%;
+                text-align: center;
+            }
+            .proto-toggle {
+                font-size: 0.9rem;
+                padding: 6px 14px 6px 10px;
+                gap: 8px;
+            }
+            .proto-toggle input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+            }
+            .proto-toggle .dot {
+                width: 12px;
+                height: 12px;
+            }
+
+            .search-wrap {
+                min-width: 100%;
+                max-width: 400px;
+            }
+            .search-wrap input {
+                font-size: 1rem;
+                padding: 10px 16px 10px 40px;
+                border-radius: 40px;
+            }
+            .search-wrap .search-icon {
+                font-size: 1rem;
+                left: 16px;
+            }
+
+            .actions {
+                justify-content: center;
+                gap: 10px;
+            }
+            .actions button {
+                font-size: 0.9rem;
+                padding: 8px 18px;
+                border-radius: 40px;
+            }
+
+            .list-header {
+                grid-template-columns: 1fr 100px 80px;
+                padding: 12px 14px;
+                font-size: 0.7rem;
+            }
+            .proxy-item {
+                grid-template-columns: 1fr 100px 80px;
+                padding: 10px 14px;
+                font-size: 0.95rem;
+                gap: 6px;
+            }
+            .protocol-badge {
+                font-size: 0.7rem;
+                padding: 2px 12px;
+            }
+            .copy-btn {
+                font-size: 0.75rem;
+                padding: 4px 14px;
+            }
+
+            .pagination {
+                font-size: 0.9rem;
+                padding: 14px 16px;
+                gap: 10px 16px;
+            }
+            .pagination button {
+                font-size: 0.85rem;
+                padding: 6px 16px;
+            }
+            .pagination .page-numbers button {
+                min-width: 38px;
+                padding: 4px 8px;
+                font-size: 0.85rem;
+            }
+
+            .footer {
+                font-size: 0.9rem;
+                margin-top: 24px;
+                padding-top: 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .app {
+                padding: 14px 12px 24px;
+                border-radius: 14px;
+            }
+            .header-left h1 {
+                font-size: 1.4rem;
+            }
+            .header-left .subtitle {
+                font-size: 0.85rem;
+            }
+            .total-badge {
+                font-size: 0.85rem;
+                padding: 4px 14px;
+            }
+            .toggle-filters-btn {
+                font-size: 0.8rem;
+                padding: 6px 14px;
+            }
+
+            .filters {
+                padding: 12px 10px;
+                gap: 12px;
+            }
+            .proto-toggle {
+                font-size: 0.8rem;
+                padding: 5px 12px 5px 8px;
+            }
+            .search-wrap input {
+                font-size: 0.9rem;
+                padding: 8px 14px 8px 36px;
+            }
+            .actions button {
+                font-size: 0.8rem;
+                padding: 6px 14px;
+            }
+
+            .list-header {
+                grid-template-columns: 1fr 70px 60px;
+                padding: 8px 10px;
+                font-size: 0.6rem;
+            }
+            .proxy-item {
+                grid-template-columns: 1fr 70px 60px;
+                padding: 6px 10px;
+                font-size: 0.8rem;
+                gap: 4px;
+            }
+            .protocol-badge {
+                font-size: 0.55rem;
+                padding: 1px 8px;
+            }
+            .copy-btn {
+                font-size: 0.6rem;
+                padding: 2px 10px;
+            }
+
+            .pagination {
+                font-size: 0.8rem;
+                padding: 10px 12px;
+                gap: 6px 10px;
+            }
+            .pagination button {
+                font-size: 0.75rem;
+                padding: 4px 12px;
+            }
+            .pagination .page-numbers button {
+                min-width: 30px;
+                padding: 2px 4px;
+                font-size: 0.75rem;
+            }
+
+            .footer {
+                font-size: 0.8rem;
+                margin-top: 20px;
+                padding-top: 14px;
+            }
+
+            .toast {
+                font-size: 0.8rem;
+                padding: 8px 18px;
+                bottom: 20px;
+                border-radius: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app" id="app">
+
+        <header class="header">
+            <div class="header-left">
+                <h1>full-free-proxy</h1>
+                <span class="subtitle" data-i18n="subtitle">Regular IP addresses should not be paid for.</span>
+            </div>
+            <div class="header-right">
+                <button class="toggle-filters-btn" id="toggleFiltersBtn" title="Показать/скрыть фильтры">
+                    <span class="icon">⚙️</span> <span data-i18n="filters_toggle">Фильтры</span>
+                </button>
+                <div class="lang-switch">
+                    <button class="active" data-lang="ru">RU</button>
+                    <button data-lang="en">EN</button>
+                </div>
+                <div class="total-badge">
+                    <span data-i18n="total">Всего</span>: <span id="totalCount">0</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="filters" id="filtersPanel">
+            <div class="filter-group" id="protocolFilters">
+                <span class="label" data-i18n="protocols">Протоколы</span>
+            </div>
+
+            <div class="search-wrap">
+                <span class="search-icon">&#128269;</span>
+                <input type="text" id="searchInput" placeholder="Поиск по IP или протоколу" autocomplete="off" data-i18n-placeholder="search_placeholder" />
+            </div>
+
+            <div class="actions">
+                <button id="selectAllBtn" data-i18n="select_all">Все</button>
+                <button id="clearAllBtn" data-i18n="clear">Сброс</button>
+                <button id="copyAllBtn" class="primary-btn" data-i18n="copy_all">Копировать все</button>
+            </div>
+        </div>
+
+        <div class="list-container">
+            <div class="list-header">
+                <span data-i18n="address">Адрес</span>
+                <span class="col-proto" data-i18n="protocol">Протокол</span>
+                <span class="col-copy" data-i18n="copy">Копировать</span>
+            </div>
+            <div class="proxy-list" id="proxyList">
+                <div class="loading-overlay">
+                    <div class="spinner"></div>
+                    <span data-i18n="loading">Загрузка прокси...</span>
+                </div>
+            </div>
+            <div class="pagination" id="paginationControls">
+                <button id="prevPageBtn" disabled data-i18n="prev">Назад</button>
+                <span class="page-info" id="pageInfo">1 / 1</span>
+                <button id="nextPageBtn" disabled data-i18n="next">Вперед</button>
+                <div class="page-numbers" id="pageNumbers"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <span data-i18n="footer_text">Сайт был сделан</span>
+            <a href="https://github.com/just-not-google" target="_blank" rel="noopener noreferrer">just-not-google</a>
+        </div>
+
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script>
+        (function() {
+
+            const PROTOCOL_FILES = [
+                { file: 'http.txt', protocol: 'http' },
+                { file: 'https.txt', protocol: 'https' },
+                { file: 'socks4.txt', protocol: 'socks4' },
+                { file: 'socks5.txt', protocol: 'socks5' },
+            ];
+
+            const PROTOCOL_LABELS = {
+                http: 'HTTP',
+                https: 'HTTPS',
+                socks4: 'SOCKS4',
+                socks5: 'SOCKS5',
+            };
+
+            const PROTOCOL_CLASSES = {
+                http: 'http',
+                https: 'https',
+                socks4: 'socks4',
+                socks5: 'socks5',
+            };
+
+            const PAGE_SIZE = 100;
+
+            // ----- i18n -----
+            const LANG = {
+                ru: {
+                    subtitle: 'Обычные IP-адреса не должны быть платными.',
+                    total: 'Всего',
+                    protocols: 'Протоколы',
+                    search_placeholder: 'Поиск по IP или протоколу',
+                    select_all: 'Все',
+                    clear: 'Сброс',
+                    copy_all: 'Копировать все',
+                    address: 'Адрес',
+                    protocol: 'Протокол',
+                    copy: 'Копировать',
+                    loading: 'Загрузка прокси...',
+                    prev: 'Назад',
+                    next: 'Вперед',
+                    copied: 'Скопировано',
+                    copy_error: 'Ошибка копирования',
+                    no_proxies: 'Нет данных. Убедитесь, что файлы прокси существуют.',
+                    empty_filter: 'Нет прокси, соответствующих фильтрам.',
+                    footer_text: 'Сайт был сделан',
+                    filters_toggle: 'Фильтры',
+                },
+                en: {
+                    subtitle: 'Regular IP addresses should not be paid for.',
+                    total: 'Total',
+                    protocols: 'Protocols',
+                    search_placeholder: 'Search by IP or protocol',
+                    select_all: 'All',
+                    clear: 'Clear',
+                    copy_all: 'Copy all',
+                    address: 'Address',
+                    protocol: 'Protocol',
+                    copy: 'Copy',
+                    loading: 'Loading proxies...',
+                    prev: 'Prev',
+                    next: 'Next',
+                    copied: 'Copied',
+                    copy_error: 'Copy error',
+                    no_proxies: 'No data. Make sure proxy files exist.',
+                    empty_filter: 'No proxies match the filters.',
+                    footer_text: 'Site made by',
+                    filters_toggle: 'Filters',
+                }
+            };
+
+            let currentLang = 'ru';
+
+            function t(key) {
+                return LANG[currentLang] && LANG[currentLang][key] ? LANG[currentLang][key] : key;
+            }
+
+            function updateI18n() {
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.dataset.i18n;
+                    el.textContent = t(key);
+                });
+                document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                    const key = el.dataset.i18nPlaceholder;
+                    el.placeholder = t(key);
+                });
+            }
+
+            // ----- state -----
+            let allProxies = [];
+            let filteredProxies = [];
+            let activeProtocols = new Set();
+            let currentPage = 1;
+            let totalPages = 1;
+            let loaded = false;
+
+            const $list = document.getElementById('proxyList');
+            const $total = document.getElementById('totalCount');
+            const $search = document.getElementById('searchInput');
+            const $filtersContainer = document.getElementById('protocolFilters');
+            const $selectAllBtn = document.getElementById('selectAllBtn');
+            const $clearAllBtn = document.getElementById('clearAllBtn');
+            const $copyAllBtn = document.getElementById('copyAllBtn');
+            const $toast = document.getElementById('toast');
+            const $prevBtn = document.getElementById('prevPageBtn');
+            const $nextBtn = document.getElementById('nextPageBtn');
+            const $pageInfo = document.getElementById('pageInfo');
+            const $pageNumbers = document.getElementById('pageNumbers');
+            const $langButtons = document.querySelectorAll('.lang-switch button');
+            const $toggleFiltersBtn = document.getElementById('toggleFiltersBtn');
+            const $filtersPanel = document.getElementById('filtersPanel');
+
+            let toastTimer = null;
+
+            function showToast(msg, type) {
+                if (toastTimer) {
+                    clearTimeout(toastTimer);
+                    $toast.classList.remove('show', 'success', 'error');
+                }
+                $toast.textContent = msg;
+                $toast.className = 'toast';
+                if (type === 'success') $toast.classList.add('success');
+                if (type === 'error') $toast.classList.add('error');
+                void $toast.offsetWidth;
+                $toast.classList.add('show');
+                toastTimer = setTimeout(() => {
+                    $toast.classList.remove('show');
+                    toastTimer = null;
+                }, 2200);
+            }
+
+            // ----- Toggle filters -----
+            function toggleFilters(show) {
+                if (show === undefined) {
+                    const isHidden = $filtersPanel.classList.contains('filters-hidden');
+                    show = isHidden;
+                }
+                if (show) {
+                    $filtersPanel.classList.remove('filters-hidden');
+                    localStorage.setItem('filtersVisible', 'true');
+                } else {
+                    $filtersPanel.classList.add('filters-hidden');
+                    localStorage.setItem('filtersVisible', 'false');
+                }
+                // Обновим текст кнопки (адаптивно)
+                const label = t('filters_toggle');
+                const icon = $toggleFiltersBtn.querySelector('.icon');
+                if (show) {
+                    $toggleFiltersBtn.innerHTML = `<span class="icon">⚙️</span> <span data-i18n="filters_toggle">${label}</span>`;
+                } else {
+                    $toggleFiltersBtn.innerHTML = `<span class="icon">⚙️</span> <span data-i18n="filters_toggle">${label}</span>`;
+                }
+                // если иконка не меняется, оставим как есть
+            }
+
+            // Инициализация состояния фильтров из localStorage
+            function initFiltersVisibility() {
+                const saved = localStorage.getItem('filtersVisible');
+                if (saved === 'false') {
+                    toggleFilters(false);
+                } else {
+                    toggleFilters(true);
+                }
+            }
+
+            // ----- load proxies -----
+            async function loadAllProxies() {
+                allProxies = [];
+                renderLoading();
+
+                for (const { file, protocol } of PROTOCOL_FILES) {
+                    try {
+                        const resp = await fetch(file);
+                        if (!resp.ok) continue;
+                        const text = await resp.text();
+                        const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
+                        for (const raw of lines) {
+                            let full = raw.trim();
+                            let address = full;
+                            let detectedProtocol = protocol;
+
+                            const idx = full.indexOf('://');
+                            if (idx !== -1) {
+                                const maybeProto = full.slice(0, idx).toLowerCase();
+                                if (['http', 'https', 'socks4', 'socks5'].includes(maybeProto)) {
+                                    detectedProtocol = maybeProto;
+                                    address = full.slice(idx + 3);
+                                } else {
+                                    address = full;
+                                }
+                            } else {
+                                full = protocol + '://' + full;
+                                address = full.slice(protocol.length + 3);
+                            }
+
+                            if (!address || address.trim() === '') continue;
+                            allProxies.push({
+                                full: full,
+                                address: address,
+                                protocol: detectedProtocol,
+                                sourceFile: file,
+                            });
+                        }
+                    } catch (e) {
+                        // ignore
+                    }
+                }
+
+                loaded = true;
+
+                if (allProxies.length === 0) {
+                    renderEmpty(t('no_proxies'));
+                    return;
+                }
+
+                // По умолчанию активен только HTTP
+                activeProtocols = new Set(['http']);
+                renderFilters();
+                applyFiltersAndRender();
+            }
+
+            function renderLoading() {
+                $list.innerHTML = `
+                    <div class="loading-overlay">
+                        <div class="spinner"></div>
+                        <span data-i18n="loading">${t('loading')}</span>
+                    </div>
+                `;
+                updatePagination(0);
+            }
+
+            function renderEmpty(msg) {
+                $list.innerHTML = `<div class="empty-state">${msg}</div>`;
+                $total.textContent = '0';
+                updatePagination(0);
+            }
+
+            function renderFilters() {
+                if (allProxies.length === 0) return;
+                const allProtos = [...new Set(allProxies.map(p => p.protocol))];
+                const order = ['http', 'https', 'socks4', 'socks5'];
+                allProtos.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+
+                let html = `<span class="label" data-i18n="protocols">${t('protocols')}</span>`;
+                for (const proto of allProtos) {
+                    const label = PROTOCOL_LABELS[proto] || proto.toUpperCase();
+                    const checked = activeProtocols.has(proto) ? 'checked' : '';
+                    const activeClass = activeProtocols.has(proto) ? 'active' : '';
+                    const colorClass = PROTOCOL_CLASSES[proto] || '';
+                    html += `
+                        <label class="proto-toggle ${activeClass}" data-proto="${proto}">
+                            <input type="checkbox" ${checked} />
+                            <span class="dot ${colorClass}"></span>
+                            <span class="proto-name">${label}</span>
+                        </label>
+                    `;
+                }
+                $filtersContainer.innerHTML = html;
+
+                document.querySelectorAll('.proto-toggle input[type="checkbox"]').forEach(cb => {
+                    cb.addEventListener('change', function(e) {
+                        e.stopPropagation();
+                        const label = this.closest('.proto-toggle');
+                        const proto = label.dataset.proto;
+                        if (this.checked) {
+                            activeProtocols.add(proto);
+                            label.classList.add('active');
+                        } else {
+                            activeProtocols.delete(proto);
+                            label.classList.remove('active');
+                        }
+                        currentPage = 1;
+                        applyFiltersAndRender();
+                    });
+                });
+            }
+
+            function applyFiltersAndRender() {
+                if (allProxies.length === 0) {
+                    renderLoading();
+                    return;
+                }
+
+                const searchTerm = $search.value.trim().toLowerCase();
+
+                filteredProxies = allProxies.filter(p => {
+                    if (!activeProtocols.has(p.protocol)) return false;
+                    if (searchTerm !== '') {
+                        return p.address.toLowerCase().includes(searchTerm) ||
+                            p.protocol.toLowerCase().includes(searchTerm) ||
+                            p.full.toLowerCase().includes(searchTerm);
+                    }
+                    return true;
+                });
+
+                const order = ['http', 'https', 'socks4', 'socks5'];
+                filteredProxies.sort((a, b) => {
+                    const idxA = order.indexOf(a.protocol);
+                    const idxB = order.indexOf(b.protocol);
+                    if (idxA !== idxB) return idxA - idxB;
+                    return a.address.localeCompare(b.address);
+                });
+
+                $total.textContent = filteredProxies.length;
+                totalPages = Math.ceil(filteredProxies.length / PAGE_SIZE) || 1;
+                if (currentPage > totalPages) currentPage = totalPages;
+                if (currentPage < 1) currentPage = 1;
+
+                renderPage(currentPage);
+                updatePagination(filteredProxies.length);
+            }
+
+            function renderPage(page) {
+                const start = (page - 1) * PAGE_SIZE;
+                const end = Math.min(start + PAGE_SIZE, filteredProxies.length);
+                const pageItems = filteredProxies.slice(start, end);
+
+                if (pageItems.length === 0) {
+                    renderEmpty(t('empty_filter'));
+                    return;
+                }
+
+                let html = '';
+                for (const p of pageItems) {
+                    const label = PROTOCOL_LABELS[p.protocol] || p.protocol.toUpperCase();
+                    const cls = PROTOCOL_CLASSES[p.protocol] || '';
+                    html += `
+                        <div class="proxy-item" data-full="${p.full}" data-address="${p.address}">
+                            <span class="address">${p.address}</span>
+                            <span class="protocol-badge ${cls}">${label}</span>
+                            <button class="copy-btn" title="${t('copy')}">${t('copy')}</button>
+                        </div>
+                    `;
+                }
+                $list.innerHTML = html;
+
+                // attach copy events
+                $list.querySelectorAll('.proxy-item').forEach(item => {
+                    const full = item.dataset.full;
+                    const copyBtn = item.querySelector('.copy-btn');
+                    if (copyBtn) {
+                        copyBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            copyToClipboard(full, this);
+                        });
+                    }
+                    // double-click to copy full
+                    item.addEventListener('dblclick', function(e) {
+                        if (e.target.closest('button')) return;
+                        copyToClipboard(full, this.querySelector('.copy-btn'));
+                    });
+                });
+            }
+
+            function updatePagination(total) {
+                if (total === undefined) total = filteredProxies.length;
+                const totalPages = Math.ceil(total / PAGE_SIZE) || 1;
+                $prevBtn.disabled = currentPage <= 1;
+                $nextBtn.disabled = currentPage >= totalPages;
+                $pageInfo.textContent = `${currentPage} / ${totalPages}`;
+
+                let numsHtml = '';
+                const maxVisible = 7;
+                let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+                let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+                if (endPage - startPage < maxVisible - 1) {
+                    startPage = Math.max(1, endPage - maxVisible + 1);
+                }
+                for (let i = startPage; i <= endPage; i++) {
+                    const active = i === currentPage ? 'active' : '';
+                    numsHtml += `<button class="${active}" data-page="${i}">${i}</button>`;
+                }
+                $pageNumbers.innerHTML = numsHtml;
+                $pageNumbers.querySelectorAll('button').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const page = parseInt(this.dataset.page);
+                        if (page !== currentPage) {
+                            currentPage = page;
+                            renderPage(currentPage);
+                            updatePagination(filteredProxies.length);
+                        }
+                    });
+                });
+            }
+
+            // ----- copy -----
+            function copyToClipboard(text, btnElement) {
+                if (!text) return;
+                const doCopy = (str) => {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(str).then(() => {
+                            showToast(t('copied') + ': ' + str, 'success');
+                            if (btnElement) {
+                                const orig = btnElement.textContent;
+                                btnElement.textContent = t('copied');
+                                btnElement.classList.add('copied');
+                                setTimeout(() => {
+                                    btnElement.textContent = orig;
+                                    btnElement.classList.remove('copied');
+                                }, 1200);
+                            }
+                        }).catch(() => fallbackCopy(str));
+                    } else {
+                        fallbackCopy(str);
+                    }
+                };
+                doCopy(text);
+            }
+
+            function fallbackCopy(text) {
+                try {
+                    const ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.left = '-9999px';
+                    ta.style.top = '-9999px';
+                    document.body.appendChild(ta);
+                    ta.focus();
+                    ta.select();
+                    const ok = document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    if (ok) {
+                        showToast(t('copied') + ': ' + text, 'success');
+                    } else {
+                        showToast(t('copy_error'), 'error');
+                    }
+                } catch (e) {
+                    showToast(t('copy_error'), 'error');
+                }
+            }
+
+            function copyAllFiltered() {
+                if (filteredProxies.length === 0) {
+                    showToast(t('empty_filter'), 'error');
+                    return;
+                }
+                const lines = filteredProxies.map(p => p.full);
+                const text = lines.join('\n');
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        showToast(t('copied') + ' ' + lines.length + ' ' + t('protocols').toLowerCase(), 'success');
+                    }).catch(() => fallbackCopy(text));
+                } else {
+                    fallbackCopy(text);
+                }
+            }
+
+            // ----- language -----
+            function setLang(lang) {
+                currentLang = lang;
+                document.querySelectorAll('.lang-switch button').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.lang === lang);
+                });
+                updateI18n();
+                // Обновим текст кнопки фильтров
+                const label = t('filters_toggle');
+                const icon = $toggleFiltersBtn.querySelector('.icon');
+                $toggleFiltersBtn.innerHTML = `<span class="icon">⚙️</span> <span data-i18n="filters_toggle">${label}</span>`;
+                if (allProxies.length > 0) {
+                    applyFiltersAndRender();
+                } else {
+                    renderLoading();
+                }
+            }
+
+            $langButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const lang = this.dataset.lang;
+                    if (lang !== currentLang) {
+                        setLang(lang);
+                    }
+                });
+            });
+
+            // ----- Toggle filters event -----
+            $toggleFiltersBtn.addEventListener('click', function() {
+                const isHidden = $filtersPanel.classList.contains('filters-hidden');
+                toggleFilters(isHidden);
+            });
+
+            // ----- events -----
+            $search.addEventListener('input', function() {
+                currentPage = 1;
+                applyFiltersAndRender();
+            });
+
+            $selectAllBtn.addEventListener('click', () => setAllProtocols(true));
+            $clearAllBtn.addEventListener('click', () => setAllProtocols(false));
+            $copyAllBtn.addEventListener('click', copyAllFiltered);
+
+            $prevBtn.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderPage(currentPage);
+                    updatePagination(filteredProxies.length);
+                }
+            });
+
+            $nextBtn.addEventListener('click', function() {
+                const totalPages = Math.ceil(filteredProxies.length / PAGE_SIZE);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderPage(currentPage);
+                    updatePagination(filteredProxies.length);
+                }
+            });
+
+            function setAllProtocols(checked) {
+                document.querySelectorAll('.proto-toggle input[type="checkbox"]').forEach(cb => {
+                    const label = cb.closest('.proto-toggle');
+                    const proto = label.dataset.proto;
+                    cb.checked = checked;
+                    if (checked) {
+                        activeProtocols.add(proto);
+                        label.classList.add('active');
+                    } else {
+                        activeProtocols.delete(proto);
+                        label.classList.remove('active');
+                    }
+                });
+                currentPage = 1;
+                applyFiltersAndRender();
+            }
+
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                    e.preventDefault();
+                    $search.focus();
+                    $search.select();
+                }
+                if (e.key === 'Escape') {
+                    $search.blur();
+                }
+            });
+
+            // init i18n
+            updateI18n();
+
+            // Инициализация видимости фильтров
+            initFiltersVisibility();
+
+            loadAllProxies();
+
+        })();
+    </script>
+
+</body>
+</html>
