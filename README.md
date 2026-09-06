@@ -1,6 +1,20 @@
-# Proxy Aggregator from GitHub Raw Lists
+<p align="center">
+  <img src="imgs/proxy_aggregator.png" width="100%" alt="Proxy Aggregator" />
+</p>
 
-This project automatically collects free proxy servers from dozens of public GitHub repositories that maintain proxy lists. It parses raw text files, normalizes entries by protocol, removes duplicates, and outputs clean lists for HTTP, HTTPS, SOCKS4, and SOCKS5 proxies.
+# full-free-proxy
+
+![License](https://img.shields.io/badge/License-MIT-blue.svg)
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
+
+<details>
+<summary>🇬🇧 English</summary>
+
+## About
+
+This tool automatically collects free proxy servers from dozens of public GitHub repositories that maintain proxy lists. It parses raw text files, normalizes entries by protocol, removes duplicates, and outputs clean lists for HTTP, HTTPS, SOCKS4, and SOCKS5.
+
+I built this because I got tired of manually hunting for working proxies every time. It’s simple, it’s fast, and it does one thing well — just the way I like it.
 
 ## Features
 
@@ -77,8 +91,90 @@ Each file contains one proxy per line.
 - Python 3.6+
 - `requests` library
 
-## License
+</details>
 
-This project is licensed under the MIT License – feel free to use and modify it for your own needs.
+<details>
+<summary>🇷🇺 Русский</summary>
 
-> **Note:** The proxy lists are fetched from third‑party repositories; availability and quality depend on those sources. The script does not validate proxy responsiveness.
+## О проекте
+
+Этот инструмент автоматически собирает бесплатные прокси-серверы из десятков публичных репозиториев GitHub, которые поддерживают списки прокси. Он парсит сырые текстовые файлы, нормализует записи по протоколу, удаляет дубликаты и выдает чистые списки для HTTP, HTTPS, SOCKS4 и SOCKS5.
+
+Я сделал это, потому что устал вручную искать рабочие прокси каждый раз. Всё просто, быстро и делает одну вещь хорошо — именно так, как я люблю.
+
+## Возможности
+
+- Собирает прокси из 40+ источников GitHub для каждого протокола.
+- Поддерживает HTTP, HTTPS, SOCKS4 и SOCKS5.
+- Автоматически удаляет протоколы из сырых данных и добавляет нужный.
+- Использует случайные заголовки и таймауты, чтобы избежать блокировок.
+- Удаляет дубликаты и сохраняет отдельные файлы по протоколам + общий `all.txt`.
+- Легковесный и легко расширяемый.
+
+## Установка
+
+1. Клонируйте репозиторий:
+   ```bash
+   git clone https://github.com/just-not-google/full-free-proxy.git
+   cd proxy-aggregator
+   ```
+
+2. Установите необходимые пакеты:
+   ```bash
+   pip install requests
+   ```
+
+## Использование
+
+Запустите основной скрипт:
+```bash
+python -m github_raw
+```
+
+Что произойдёт:
+- Будут загружены все списки из URL-адресов, указанных в `github_raw_url_list.py`.
+- Каждая строка будет обработана: удалены существующие префиксы протоколов и добавлен целевой протокол.
+- Уникальные прокси будут записаны в `http.txt`, `https.txt`, `socks4.txt`, `socks5.txt`.
+- Все уникальные прокси (без привязки к протоколу) будут записаны в `all.txt`.
+
+## Структура проекта
+
+```
+├── parsers/
+│   ├── __init__.py
+│   ├── github_raw_url_list.py     # Список URL-адресов GitHub, сгруппированных по протоколам
+│   ├── template_requests.py       # Обработчик HTTP-запросов со случайными заголовками и таймаутами
+│   └── data/
+│       ├── __init__.py            # Экспорт констант
+│       ├── header_list.py         # Список реалистичных заголовков браузера
+│       ├── main_constants.py      # Диапазоны таймаутов
+│       ├── protocols.py           # Константы строк протоколов
+│       ├── protocol_names.py      # Соответствие протокол -> имя выходного файла
+│       └── replace_proxy.py       # Управление удалением префиксов (всегда True)
+├── github_raw.py                  # Основная логика: загрузка и обработка
+```
+
+## Настройка
+
+- **Добавление или удаление источников**: отредактируйте `github_raw_url_list.py` – ключ — это протокол (`HTTP_PROTOCOL` и т.д.), значение — список URL-адресов.
+- **Изменение имён выходных файлов**: измените `protocol_names.py`.
+- **Настройка таймаутов**: измените `MIN_TIMEOUT` и `MAX_TIMEOUT` в `main_constants.py`.
+- **Отключение замены префиксов**: установите `REPLACE_PROXY[protocol] = False` в `replace_proxy.py`.
+
+## Выходные файлы
+
+После выполнения в корне проекта будут созданы:
+- `http.txt`   – HTTP-прокси (формат: `http://ip:port`)
+- `https.txt`  – HTTPS-прокси (`https://ip:port`)
+- `socks4.txt` – SOCKS4-прокси (`socks4://ip:port`)
+- `socks5.txt` – SOCKS5-прокси (`socks5://ip:port`)
+- `all.txt`    – Все уникальные прокси из всех протоколов, отсортированные.
+
+Каждый файл содержит по одному прокси на строку.
+
+## Зависимости
+
+- Python 3.6+
+- Библиотека `requests`
+
+</details>
