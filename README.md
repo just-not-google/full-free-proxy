@@ -75,6 +75,14 @@ This will:
 - **Adjust timeouts**: Change `MIN_TIMEOUT` and `MAX_TIMEOUT` in `main_constants.py`.
 - **Disable prefix replacement**: Set `REPLACE_PROXY[protocol] = False` in `replace_proxy.py`.
 
+## WebSite
+
+A minimalistic but also user-friendly website that is updated via GitHub Actions. Nothing superfluous, so as not to distract from the main thing - from the IP proxy.
+
+<p align="center">
+  <img src="imgs/ui.png" width="80%" alt="Proxy UI Screenshot" />
+</p>
+
 ## Output Files
 
 After execution, the following files will be created in the project root:
@@ -160,6 +168,14 @@ python -m github_raw
 - **Изменение имён выходных файлов**: измените `protocol_names.py`.
 - **Настройка таймаутов**: измените `MIN_TIMEOUT` и `MAX_TIMEOUT` в `main_constants.py`.
 - **Отключение замены префиксов**: установите `REPLACE_PROXY[protocol] = False` в `replace_proxy.py`.
+
+## Веб-сайт
+
+Минималистичный, но также и удобный сайт, который обновляется через GitHub Actions. Ничего лишнего, чтобы не отвлекало от главного - от айпи прокси.
+
+<p align="center">
+  <img src="imgs/ui.png" width="80%" alt="Proxy UI Screenshot" />
+</p>
 
 ## Выходные файлы
 
