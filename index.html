@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-    <title>full-free-proxy</title>
+    <title>full-free-proxy v0.0.2</title>
     <style>
         *,
         *::before,
@@ -62,6 +62,7 @@
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             padding: 28px 30px 40px;
+            will-change: transform;
         }
 
         .header {
@@ -86,6 +87,13 @@
             font-weight: 700;
             color: var(--text);
             letter-spacing: -0.3px;
+        }
+
+        .header-left h1 small {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-left: 6px;
         }
 
         .header-left .subtitle {
@@ -142,7 +150,6 @@
             font-weight: 700;
         }
 
-        /* Кнопка переключения фильтров */
         .toggle-filters-btn {
             background: none;
             border: 1px solid var(--border);
@@ -169,6 +176,14 @@
             line-height: 1;
         }
 
+        .filters-wrapper {
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .filters-wrapper-hidden {
+            display: none !important;
+        }
+
         .filters {
             display: flex;
             flex-wrap: wrap;
@@ -178,11 +193,6 @@
             background: var(--bg);
             padding: 14px 18px;
             border-radius: var(--radius-sm);
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-        .filters-hidden {
-            display: none !important;
         }
 
         .filter-group {
@@ -215,11 +225,12 @@
             font-size: 0.8rem;
             font-weight: 500;
             color: var(--text-secondary);
+            flex-shrink: 0;
         }
         .proto-toggle:hover {
             border-color: var(--primary-light);
         }
-        .proto-toggle input[type="checkbox"] {
+        .proto-toggle input[type="radio"] {
             width: 16px;
             height: 16px;
             accent-color: var(--primary);
@@ -305,6 +316,25 @@
             border-color: var(--primary-dark);
         }
 
+        .protocol-info {
+            margin: 0 0 20px 0;
+            padding: 16px 18px;
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            border-left: 4px solid var(--primary);
+        }
+        .protocol-info .info-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        .protocol-info .info-desc {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
         .list-container {
             border-radius: var(--radius-sm);
             border: 1px solid var(--border);
@@ -331,11 +361,15 @@
         .list-header .col-copy {
             text-align: right;
         }
+        .list-header span:first-child {
+            text-align: left;
+        }
 
         .proxy-list {
             max-height: 600px;
             overflow-y: auto;
             scroll-behavior: smooth;
+            will-change: scroll-position;
         }
         .proxy-list::-webkit-scrollbar {
             width: 6px;
@@ -357,6 +391,7 @@
             gap: 6px;
             transition: 0.15s;
             font-size: 0.9rem;
+            will-change: transform;
         }
         .proxy-item:last-child {
             border-bottom: none;
@@ -370,6 +405,7 @@
             font-weight: 500;
             letter-spacing: -0.2px;
             word-break: break-all;
+            text-align: left;
         }
 
         .protocol-badge {
@@ -381,6 +417,7 @@
             text-transform: uppercase;
             letter-spacing: 0.3px;
             white-space: nowrap;
+            text-align: center;
         }
         .protocol-badge.http {
             background: var(--http-bg);
@@ -411,6 +448,7 @@
             cursor: pointer;
             transition: 0.2s;
             white-space: nowrap;
+            text-align: center;
         }
         .copy-btn:hover {
             border-color: var(--primary);
@@ -512,6 +550,9 @@
             text-align: center;
             font-size: 0.85rem;
             color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
         .footer a {
             color: var(--primary);
@@ -520,6 +561,10 @@
         }
         .footer a:hover {
             text-decoration: underline;
+        }
+        .footer .disclaimer {
+            font-size: 0.8rem;
+            opacity: 0.7;
         }
 
         .toast {
@@ -588,22 +633,29 @@
                 gap: 14px;
                 padding: 16px 14px;
             }
+
+            /* Скрываем надпись "Протокол" и делаем 4 равные кнопки в ряд */
             .filter-group {
-                justify-content: center;
-                gap: 8px 14px;
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
+                width: 100%;
+                flex-wrap: unset;
+                overflow: visible;
             }
             .filter-group .label {
-                font-size: 0.85rem;
-                margin-right: 0;
-                width: 100%;
-                text-align: center;
+                display: none;
             }
             .proto-toggle {
-                font-size: 0.9rem;
-                padding: 6px 14px 6px 10px;
-                gap: 8px;
+                width: 100%;
+                padding: 8px 4px;
+                font-size: 0.85rem;
+                justify-content: center;
+                flex-shrink: 0;
+                white-space: nowrap;
+                border-radius: 30px;
             }
-            .proto-toggle input[type="checkbox"] {
+            .proto-toggle input[type="radio"] {
                 width: 18px;
                 height: 18px;
             }
@@ -629,31 +681,65 @@
             .actions {
                 justify-content: center;
                 gap: 10px;
+                width: 100%;
             }
             .actions button {
                 font-size: 0.9rem;
                 padding: 8px 18px;
                 border-radius: 40px;
+                flex: 1;
+                min-width: 120px;
             }
 
+            .protocol-info {
+                padding: 14px 16px;
+            }
+            .protocol-info .info-title {
+                font-size: 1rem;
+            }
+            .protocol-info .info-desc {
+                font-size: 0.9rem;
+            }
+
+            /* Мобильная сетка: адрес по левому краю, протокол и копирование по центру */
             .list-header {
                 grid-template-columns: 1fr 100px 80px;
                 padding: 12px 14px;
                 font-size: 0.7rem;
+                gap: 8px;
             }
+            .list-header span:first-child {
+                text-align: left;
+            }
+            .list-header .col-proto {
+                text-align: center;
+            }
+            .list-header .col-copy {
+                text-align: center;
+            }
+
             .proxy-item {
                 grid-template-columns: 1fr 100px 80px;
                 padding: 10px 14px;
                 font-size: 0.95rem;
-                gap: 6px;
+                gap: 8px;
+            }
+            .proxy-item .address {
+                text-align: left;
+                font-size: 0.9rem;
             }
             .protocol-badge {
+                justify-self: center;
                 font-size: 0.7rem;
                 padding: 2px 12px;
+                text-align: center;
             }
             .copy-btn {
-                font-size: 0.75rem;
-                padding: 4px 14px;
+                justify-self: center;
+                font-size: 0.85rem;
+                padding: 6px 16px;
+                min-width: 80px;
+                white-space: nowrap;
             }
 
             .pagination {
@@ -675,6 +761,9 @@
                 font-size: 0.9rem;
                 margin-top: 24px;
                 padding-top: 18px;
+            }
+            .footer .disclaimer {
+                font-size: 0.8rem;
             }
         }
 
@@ -705,10 +794,29 @@
                 padding: 12px 10px;
                 gap: 12px;
             }
-            .proto-toggle {
-                font-size: 0.8rem;
-                padding: 5px 12px 5px 8px;
+
+            .filter-group {
+                gap: 6px;
+                grid-template-columns: repeat(4, 1fr);
             }
+            .proto-toggle {
+                font-size: 0.7rem;
+                padding: 6px 2px;
+                gap: 4px;
+                border-radius: 30px;
+            }
+            .proto-toggle input[type="radio"] {
+                width: 16px;
+                height: 16px;
+            }
+            .proto-toggle .dot {
+                width: 10px;
+                height: 10px;
+            }
+            .proto-toggle .proto-name {
+                font-size: 0.65rem;
+            }
+
             .search-wrap input {
                 font-size: 0.9rem;
                 padding: 8px 14px 8px 36px;
@@ -716,26 +824,55 @@
             .actions button {
                 font-size: 0.8rem;
                 padding: 6px 14px;
+                min-width: 80px;
             }
 
+            .protocol-info {
+                padding: 12px 12px;
+            }
+            .protocol-info .info-title {
+                font-size: 0.9rem;
+            }
+            .protocol-info .info-desc {
+                font-size: 0.8rem;
+            }
+
+            /* Очень узкие экраны: увеличиваем колонку для копирования */
             .list-header {
-                grid-template-columns: 1fr 70px 60px;
+                grid-template-columns: 1fr 70px 80px;
                 padding: 8px 10px;
                 font-size: 0.6rem;
+                gap: 6px;
             }
+            .list-header span:first-child {
+                text-align: left;
+            }
+            .list-header .col-proto {
+                text-align: center;
+            }
+            .list-header .col-copy {
+                text-align: center;
+            }
+
             .proxy-item {
-                grid-template-columns: 1fr 70px 60px;
+                grid-template-columns: 1fr 70px 80px;
                 padding: 6px 10px;
                 font-size: 0.8rem;
-                gap: 4px;
+                gap: 6px;
+            }
+            .proxy-item .address {
+                font-size: 0.8rem;
+                text-align: left;
             }
             .protocol-badge {
-                font-size: 0.55rem;
-                padding: 1px 8px;
+                font-size: 0.6rem;
+                padding: 2px 8px;
             }
             .copy-btn {
-                font-size: 0.6rem;
-                padding: 2px 10px;
+                font-size: 0.7rem;
+                padding: 4px 12px;
+                min-width: 60px;
+                justify-self: center;
             }
 
             .pagination {
@@ -758,12 +895,33 @@
                 margin-top: 20px;
                 padding-top: 14px;
             }
+            .footer .disclaimer {
+                font-size: 0.7rem;
+            }
 
             .toast {
                 font-size: 0.8rem;
                 padding: 8px 18px;
                 bottom: 20px;
                 border-radius: 30px;
+            }
+
+            .proxy-list {
+                max-height: 450px;
+                -webkit-overflow-scrolling: touch;
+            }
+            .proxy-item {
+                will-change: transform;
+            }
+        }
+
+        @media (max-width: 820px) {
+            .proxy-list {
+                max-height: 500px;
+                -webkit-overflow-scrolling: touch;
+            }
+            .proxy-item {
+                will-change: transform;
             }
         }
     </style>
@@ -774,7 +932,7 @@
 
         <header class="header">
             <div class="header-left">
-                <h1>full-free-proxy</h1>
+                <h1>full-free-proxy <small>v0.0.2</small></h1>
                 <span class="subtitle" data-i18n="subtitle">Regular IP addresses should not be paid for.</span>
             </div>
             <div class="header-right">
@@ -791,20 +949,27 @@
             </div>
         </header>
 
-        <div class="filters" id="filtersPanel">
-            <div class="filter-group" id="protocolFilters">
-                <span class="label" data-i18n="protocols">Протоколы</span>
+        <!-- Обёртка для фильтров и информации о протоколе -->
+        <div class="filters-wrapper" id="filtersWrapper">
+            <div class="filters" id="filtersPanel">
+                <div class="filter-group" id="protocolFilters">
+                    <span class="label" data-i18n="protocols">Протокол</span>
+                </div>
+
+                <div class="search-wrap">
+                    <span class="search-icon">&#128269;</span>
+                    <input type="text" id="searchInput" placeholder="Поиск по IP или протоколу" autocomplete="off" data-i18n-placeholder="search_placeholder" />
+                </div>
+
+                <div class="actions">
+                    <button id="copyAllBtn" class="primary-btn" data-i18n="copy_all">Копировать все</button>
+                </div>
             </div>
 
-            <div class="search-wrap">
-                <span class="search-icon">&#128269;</span>
-                <input type="text" id="searchInput" placeholder="Поиск по IP или протоколу" autocomplete="off" data-i18n-placeholder="search_placeholder" />
-            </div>
-
-            <div class="actions">
-                <button id="selectAllBtn" data-i18n="select_all">Все</button>
-                <button id="clearAllBtn" data-i18n="clear">Сброс</button>
-                <button id="copyAllBtn" class="primary-btn" data-i18n="copy_all">Копировать все</button>
+            <!-- Блок информации о протоколе (без приложений) -->
+            <div class="protocol-info" id="protocolInfo">
+                <div class="info-title" id="infoTitle">HTTP</div>
+                <div class="info-desc" id="infoDesc">...</div>
             </div>
         </div>
 
@@ -829,8 +994,11 @@
         </div>
 
         <div class="footer">
-            <span data-i18n="footer_text">Сайт был сделан</span>
-            <a href="https://github.com/just-not-google" target="_blank" rel="noopener noreferrer">just-not-google</a>
+            <div>
+                <span data-i18n="footer_text">Сайт был сделан</span>
+                <a href="https://github.com/just-not-google" target="_blank" rel="noopener noreferrer">just-not-google</a>
+            </div>
+            <div class="disclaimer" data-i18n="disclaimer">За работоспособность не отвечаю — просто парсю готовые отфильтрованные списки с сайтов.</div>
         </div>
 
         <div class="toast" id="toast"></div>
@@ -860,6 +1028,34 @@
                 socks5: 'socks5',
             };
 
+            // Описания протоколов (без приложений)
+            const PROTOCOL_INFO = {
+                http: {
+                    description: {
+                        ru: 'HTTP (HyperText Transfer Protocol) — основной протокол передачи данных в интернете. Используется для загрузки веб-страниц, API-запросов и обмена данными между клиентом и сервером. Подходит для парсинга, сканирования, тестирования и автоматизации. Не шифрует трафик, что делает его быстрым, но менее безопасным.',
+                        en: 'HTTP (HyperText Transfer Protocol) — the core protocol for data transfer on the web. Used for loading web pages, API requests, and data exchange between client and server. Suitable for crawling, scanning, testing, and automation. Does not encrypt traffic, making it fast but less secure.'
+                    }
+                },
+                https: {
+                    description: {
+                        ru: 'HTTPS (HTTP Secure) — защищённая версия HTTP, использующая шифрование TLS/SSL. Обеспечивает конфиденциальность и целостность данных. Рекомендуется для работы с чувствительной информацией, банковскими транзакциями, авторизацией и любыми задачами, требующими безопасности.',
+                        en: 'HTTPS (HTTP Secure) — the secure version of HTTP, using TLS/SSL encryption. Ensures confidentiality and data integrity. Recommended for handling sensitive information, banking transactions, authorization, and any tasks requiring security.'
+                    }
+                },
+                socks4: {
+                    description: {
+                        ru: 'SOCKS4 — прокси-протокол, работающий на уровне сеанса. Поддерживает TCP-соединения, не поддерживает UDP и аутентификацию. Подходит для обхода сетевых ограничений, маршрутизации трафика через промежуточные узлы. Простой и быстрый, но менее безопасный, чем SOCKS5.',
+                        en: 'SOCKS4 — a session-level proxy protocol. Supports TCP connections, does not support UDP or authentication. Suitable for bypassing network restrictions, routing traffic through intermediate nodes. Simple and fast, but less secure than SOCKS5.'
+                    }
+                },
+                socks5: {
+                    description: {
+                        ru: 'SOCKS5 — улучшенная версия SOCKS4, поддерживающая UDP, аутентификацию (включая GSS-API) и IPv6. Более гибкий и безопасный протокол. Позволяет маршрутизировать любой тип трафика, включая DNS-запросы через прокси. Широко используется для анонимизации и обхода блокировок.',
+                        en: 'SOCKS5 — an enhanced version of SOCKS4, supporting UDP, authentication (including GSS-API), and IPv6. More flexible and secure. Allows routing any type of traffic, including DNS queries through the proxy. Widely used for anonymization and bypassing restrictions.'
+                    }
+                }
+            };
+
             const PAGE_SIZE = 100;
 
             // ----- i18n -----
@@ -867,10 +1063,8 @@
                 ru: {
                     subtitle: 'Обычные IP-адреса не должны быть платными.',
                     total: 'Всего',
-                    protocols: 'Протоколы',
+                    protocols: 'Протокол',
                     search_placeholder: 'Поиск по IP или протоколу',
-                    select_all: 'Все',
-                    clear: 'Сброс',
                     copy_all: 'Копировать все',
                     address: 'Адрес',
                     protocol: 'Протокол',
@@ -881,17 +1075,16 @@
                     copied: 'Скопировано',
                     copy_error: 'Ошибка копирования',
                     no_proxies: 'Нет данных. Убедитесь, что файлы прокси существуют.',
-                    empty_filter: 'Нет прокси, соответствующих фильтрам.',
+                    empty_filter: 'Нет прокси для выбранного протокола.',
                     footer_text: 'Сайт был сделан',
+                    disclaimer: 'За работоспособность не отвечаю — просто парсю готовые отфильтрованные списки с сайтов.',
                     filters_toggle: 'Фильтры',
                 },
                 en: {
                     subtitle: 'Regular IP addresses should not be paid for.',
                     total: 'Total',
-                    protocols: 'Protocols',
+                    protocols: 'Protocol',
                     search_placeholder: 'Search by IP or protocol',
-                    select_all: 'All',
-                    clear: 'Clear',
                     copy_all: 'Copy all',
                     address: 'Address',
                     protocol: 'Protocol',
@@ -902,8 +1095,9 @@
                     copied: 'Copied',
                     copy_error: 'Copy error',
                     no_proxies: 'No data. Make sure proxy files exist.',
-                    empty_filter: 'No proxies match the filters.',
+                    empty_filter: 'No proxies for selected protocol.',
                     footer_text: 'Site made by',
+                    disclaimer: 'I do not guarantee performance — I just parse ready filtered lists from sites.',
                     filters_toggle: 'Filters',
                 }
             };
@@ -928,7 +1122,7 @@
             // ----- state -----
             let allProxies = [];
             let filteredProxies = [];
-            let activeProtocols = new Set();
+            let activeProtocol = 'http';
             let currentPage = 1;
             let totalPages = 1;
             let loaded = false;
@@ -937,8 +1131,6 @@
             const $total = document.getElementById('totalCount');
             const $search = document.getElementById('searchInput');
             const $filtersContainer = document.getElementById('protocolFilters');
-            const $selectAllBtn = document.getElementById('selectAllBtn');
-            const $clearAllBtn = document.getElementById('clearAllBtn');
             const $copyAllBtn = document.getElementById('copyAllBtn');
             const $toast = document.getElementById('toast');
             const $prevBtn = document.getElementById('prevPageBtn');
@@ -947,7 +1139,10 @@
             const $pageNumbers = document.getElementById('pageNumbers');
             const $langButtons = document.querySelectorAll('.lang-switch button');
             const $toggleFiltersBtn = document.getElementById('toggleFiltersBtn');
-            const $filtersPanel = document.getElementById('filtersPanel');
+            const $filtersWrapper = document.getElementById('filtersWrapper');
+            const $protocolInfo = document.getElementById('protocolInfo');
+            const $infoTitle = document.getElementById('infoTitle');
+            const $infoDesc = document.getElementById('infoDesc');
 
             let toastTimer = null;
 
@@ -968,31 +1163,23 @@
                 }, 2200);
             }
 
-            // ----- Toggle filters -----
+            // ----- Toggle filters (скрывает всю обёртку) -----
             function toggleFilters(show) {
                 if (show === undefined) {
-                    const isHidden = $filtersPanel.classList.contains('filters-hidden');
+                    const isHidden = $filtersWrapper.classList.contains('filters-wrapper-hidden');
                     show = isHidden;
                 }
                 if (show) {
-                    $filtersPanel.classList.remove('filters-hidden');
+                    $filtersWrapper.classList.remove('filters-wrapper-hidden');
                     localStorage.setItem('filtersVisible', 'true');
                 } else {
-                    $filtersPanel.classList.add('filters-hidden');
+                    $filtersWrapper.classList.add('filters-wrapper-hidden');
                     localStorage.setItem('filtersVisible', 'false');
                 }
-                // Обновим текст кнопки (адаптивно)
                 const label = t('filters_toggle');
-                const icon = $toggleFiltersBtn.querySelector('.icon');
-                if (show) {
-                    $toggleFiltersBtn.innerHTML = `<span class="icon">⚙️</span> <span data-i18n="filters_toggle">${label}</span>`;
-                } else {
-                    $toggleFiltersBtn.innerHTML = `<span class="icon">⚙️</span> <span data-i18n="filters_toggle">${label}</span>`;
-                }
-                // если иконка не меняется, оставим как есть
+                $toggleFiltersBtn.innerHTML = `<span class="icon">⚙️</span> <span data-i18n="filters_toggle">${label}</span>`;
             }
 
-            // Инициализация состояния фильтров из localStorage
             function initFiltersVisibility() {
                 const saved = localStorage.getItem('filtersVisible');
                 if (saved === 'false') {
@@ -1000,6 +1187,20 @@
                 } else {
                     toggleFilters(true);
                 }
+            }
+
+            // ----- Render protocol info (только заголовок и описание) -----
+            function renderProtocolInfo(protocol) {
+                const info = PROTOCOL_INFO[protocol];
+                if (!info) {
+                    $protocolInfo.style.display = 'none';
+                    return;
+                }
+                $protocolInfo.style.display = 'block';
+                const lang = currentLang;
+                const title = PROTOCOL_LABELS[protocol] || protocol.toUpperCase();
+                $infoTitle.textContent = title;
+                $infoDesc.textContent = info.description[lang] || info.description.ru;
             }
 
             // ----- load proxies -----
@@ -1052,10 +1253,10 @@
                     return;
                 }
 
-                // По умолчанию активен только HTTP
-                activeProtocols = new Set(['http']);
+                activeProtocol = 'http';
                 renderFilters();
                 applyFiltersAndRender();
+                renderProtocolInfo(activeProtocol);
             }
 
             function renderLoading() {
@@ -1083,12 +1284,12 @@
                 let html = `<span class="label" data-i18n="protocols">${t('protocols')}</span>`;
                 for (const proto of allProtos) {
                     const label = PROTOCOL_LABELS[proto] || proto.toUpperCase();
-                    const checked = activeProtocols.has(proto) ? 'checked' : '';
-                    const activeClass = activeProtocols.has(proto) ? 'active' : '';
+                    const checked = activeProtocol === proto ? 'checked' : '';
+                    const activeClass = activeProtocol === proto ? 'active' : '';
                     const colorClass = PROTOCOL_CLASSES[proto] || '';
                     html += `
                         <label class="proto-toggle ${activeClass}" data-proto="${proto}">
-                            <input type="checkbox" ${checked} />
+                            <input type="radio" name="protocol" value="${proto}" ${checked} />
                             <span class="dot ${colorClass}"></span>
                             <span class="proto-name">${label}</span>
                         </label>
@@ -1096,20 +1297,18 @@
                 }
                 $filtersContainer.innerHTML = html;
 
-                document.querySelectorAll('.proto-toggle input[type="checkbox"]').forEach(cb => {
-                    cb.addEventListener('change', function(e) {
-                        e.stopPropagation();
-                        const label = this.closest('.proto-toggle');
-                        const proto = label.dataset.proto;
+                document.querySelectorAll('.proto-toggle input[type="radio"]').forEach(radio => {
+                    radio.addEventListener('change', function(e) {
                         if (this.checked) {
-                            activeProtocols.add(proto);
-                            label.classList.add('active');
-                        } else {
-                            activeProtocols.delete(proto);
-                            label.classList.remove('active');
+                            const proto = this.value;
+                            activeProtocol = proto;
+                            document.querySelectorAll('.proto-toggle').forEach(toggle => {
+                                toggle.classList.toggle('active', toggle.dataset.proto === proto);
+                            });
+                            currentPage = 1;
+                            applyFiltersAndRender();
+                            renderProtocolInfo(proto);
                         }
-                        currentPage = 1;
-                        applyFiltersAndRender();
                     });
                 });
             }
@@ -1123,7 +1322,7 @@
                 const searchTerm = $search.value.trim().toLowerCase();
 
                 filteredProxies = allProxies.filter(p => {
-                    if (!activeProtocols.has(p.protocol)) return false;
+                    if (p.protocol !== activeProtocol) return false;
                     if (searchTerm !== '') {
                         return p.address.toLowerCase().includes(searchTerm) ||
                             p.protocol.toLowerCase().includes(searchTerm) ||
@@ -1147,6 +1346,8 @@
 
                 renderPage(currentPage);
                 updatePagination(filteredProxies.length);
+
+                renderProtocolInfo(activeProtocol);
             }
 
             function renderPage(page) {
@@ -1173,7 +1374,6 @@
                 }
                 $list.innerHTML = html;
 
-                // attach copy events
                 $list.querySelectorAll('.proxy-item').forEach(item => {
                     const full = item.dataset.full;
                     const copyBtn = item.querySelector('.copy-btn');
@@ -1183,7 +1383,6 @@
                             copyToClipboard(full, this);
                         });
                     }
-                    // double-click to copy full
                     item.addEventListener('dblclick', function(e) {
                         if (e.target.closest('button')) return;
                         copyToClipboard(full, this.querySelector('.copy-btn'));
@@ -1291,12 +1490,11 @@
                     btn.classList.toggle('active', btn.dataset.lang === lang);
                 });
                 updateI18n();
-                // Обновим текст кнопки фильтров
                 const label = t('filters_toggle');
-                const icon = $toggleFiltersBtn.querySelector('.icon');
                 $toggleFiltersBtn.innerHTML = `<span class="icon">⚙️</span> <span data-i18n="filters_toggle">${label}</span>`;
                 if (allProxies.length > 0) {
                     applyFiltersAndRender();
+                    renderProtocolInfo(activeProtocol);
                 } else {
                     renderLoading();
                 }
@@ -1313,7 +1511,7 @@
 
             // ----- Toggle filters event -----
             $toggleFiltersBtn.addEventListener('click', function() {
-                const isHidden = $filtersPanel.classList.contains('filters-hidden');
+                const isHidden = $filtersWrapper.classList.contains('filters-wrapper-hidden');
                 toggleFilters(isHidden);
             });
 
@@ -1323,8 +1521,6 @@
                 applyFiltersAndRender();
             });
 
-            $selectAllBtn.addEventListener('click', () => setAllProtocols(true));
-            $clearAllBtn.addEventListener('click', () => setAllProtocols(false));
             $copyAllBtn.addEventListener('click', copyAllFiltered);
 
             $prevBtn.addEventListener('click', function() {
@@ -1344,23 +1540,6 @@
                 }
             });
 
-            function setAllProtocols(checked) {
-                document.querySelectorAll('.proto-toggle input[type="checkbox"]').forEach(cb => {
-                    const label = cb.closest('.proto-toggle');
-                    const proto = label.dataset.proto;
-                    cb.checked = checked;
-                    if (checked) {
-                        activeProtocols.add(proto);
-                        label.classList.add('active');
-                    } else {
-                        activeProtocols.delete(proto);
-                        label.classList.remove('active');
-                    }
-                });
-                currentPage = 1;
-                applyFiltersAndRender();
-            }
-
             document.addEventListener('keydown', function(e) {
                 if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
                     e.preventDefault();
@@ -1375,7 +1554,6 @@
             // init i18n
             updateI18n();
 
-            // Инициализация видимости фильтров
             initFiltersVisibility();
 
             loadAllProxies();
