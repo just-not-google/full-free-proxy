@@ -80,7 +80,7 @@ This will:
 A minimalistic but also user-friendly website that is updated via GitHub Actions. Nothing superfluous, so as not to distract from the main thing - from the IP proxy.
 
 <p align="center">
-  <img src="imgs/ui.png" width="80%" alt="Proxy UI Screenshot" />
+  <img src="imgs/ui_2.png" width="80%" alt="Proxy UI Screenshot" />
 </p>
 
 ## Output Files
@@ -174,7 +174,7 @@ python -m github_raw
 Минималистичный, но также и удобный сайт, который обновляется через GitHub Actions. Ничего лишнего, чтобы не отвлекало от главного - от айпи прокси.
 
 <p align="center">
-  <img src="imgs/ui.png" width="80%" alt="Proxy UI Screenshot" />
+  <img src="imgs/ui_2.png" width="80%" alt="Proxy UI Screenshot" />
 </p>
 
 ## Выходные файлы
@@ -268,7 +268,7 @@ python -m github_raw
 一个极简但同样易用的网站，通过 GitHub Actions 自动更新。没有多余的东西，以免分散对核心内容的注意力 —— 也就是 IP 代理。
 
 <p align="center">
-  <img src="imgs/ui.png" width="80%" alt="Proxy UI Screenshot" />
+  <img src="imgs/ui_2.png" width="80%" alt="Proxy UI Screenshot" />
 </p>
 
 ## 输出文件
