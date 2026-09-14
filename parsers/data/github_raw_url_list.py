@@ -41,7 +41,9 @@ GITHUB_RAW_URL_LIST = {
         "https://raw.githubusercontent.com/officialputuid/KangProxy/refs/heads/main/http/http.txt",
         "https://raw.githubusercontent.com/relayglass/free-proxy-list/refs/heads/main/protocol/http/http.txt",
         "https://raw.githubusercontent.com/z3a4/free-proxy-list/refs/heads/main/proxies/checked/protocols/http/http-proxies.txt",
-        "https://raw.githubusercontent.com/proxy-free/free-proxy-list/refs/heads/main/http.txt"
+        "https://raw.githubusercontent.com/proxy-free/free-proxy-list/refs/heads/main/http.txt",
+        "https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/refs/heads/main/http.txt",
+        "https://raw.githubusercontent.com/stormsia/proxy-list/refs/heads/main/http.txt"
     ],
     HTTPS_PROTOCOL: [
         "https://raw.githubusercontent.com/Thordata/awesome-free-proxy-list/refs/heads/main/proxies/https.txt",
@@ -71,7 +73,8 @@ GITHUB_RAW_URL_LIST = {
         "https://raw.githubusercontent.com/officialputuid/KangProxy/refs/heads/main/https/https.txt",
         "https://raw.githubusercontent.com/relayglass/free-proxy-list/refs/heads/main/protocol/https/https.txt",
         "https://raw.githubusercontent.com/z3a4/free-proxy-list/refs/heads/main/proxies/checked/protocols/https/https-proxies.txt",
-        "https://raw.githubusercontent.com/proxy-free/free-proxy-list/refs/heads/main/https.txt"
+        "https://raw.githubusercontent.com/proxy-free/free-proxy-list/refs/heads/main/https.txt",
+        "https://raw.githubusercontent.com/r00tee/Proxy-List/refs/heads/main/Https.txt"
     ],
     SOCKS4_PROTOCOL: [
         "https://raw.githubusercontent.com/Thordata/awesome-free-proxy-list/refs/heads/main/proxies/socks4.txt",
@@ -114,7 +117,10 @@ GITHUB_RAW_URL_LIST = {
         "https://raw.githubusercontent.com/officialputuid/KangProxy/refs/heads/main/socks4/socks4.txt",
         "https://raw.githubusercontent.com/relayglass/free-proxy-list/refs/heads/main/protocol/socks4/socks4.txt",
         "https://raw.githubusercontent.com/z3a4/free-proxy-list/refs/heads/main/proxies/checked/protocols/socks4/socks4-proxies.txt",
-        "https://raw.githubusercontent.com/proxy-free/free-proxy-list/refs/heads/main/socks4.txt"
+        "https://raw.githubusercontent.com/proxy-free/free-proxy-list/refs/heads/main/socks4.txt",
+        "https://raw.githubusercontent.com/r00tee/Proxy-List/refs/heads/main/Socks4.txt",
+        "https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/refs/heads/main/socks4.txt",
+        "https://raw.githubusercontent.com/stormsia/proxy-list/refs/heads/main/socks4.txt"
     ],
     SOCKS5_PROTOCOL: [
         "https://raw.githubusercontent.com/Thordata/awesome-free-proxy-list/refs/heads/main/proxies/socks5.txt",
@@ -158,6 +164,9 @@ GITHUB_RAW_URL_LIST = {
         "https://raw.githubusercontent.com/officialputuid/KangProxy/refs/heads/main/socks5/socks5.txt",
         "https://raw.githubusercontent.com/relayglass/free-proxy-list/refs/heads/main/protocol/socks5/socks5.txt",
         "https://raw.githubusercontent.com/z3a4/free-proxy-list/refs/heads/main/proxies/checked/protocols/socks5/socks5-proxies.txt",
-        "https://raw.githubusercontent.com/proxy-free/free-proxy-list/refs/heads/main/socks5.txt"
+        "https://raw.githubusercontent.com/proxy-free/free-proxy-list/refs/heads/main/socks5.txt",
+        "https://raw.githubusercontent.com/r00tee/Proxy-List/refs/heads/main/Socks5.txt",
+        "https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/refs/heads/main/socks5.txt",
+        "https://raw.githubusercontent.com/stormsia/proxy-list/refs/heads/main/socks5.txt"
     ]
 }
