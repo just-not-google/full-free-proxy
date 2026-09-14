@@ -1206,8 +1206,9 @@
                     <span class="icon">⚙️</span> <span data-i18n="filters_toggle">Фильтры</span>
                 </button>
                 <div class="lang-switch">
-                    <button class="active" data-lang="ru">RU</button>
+                    <button data-lang="ru">RU</button>
                     <button data-lang="en">EN</button>
+                    <button data-lang="zh">中文</button>
                 </div>
                 <div class="total-badge">
                     <span data-i18n="total">Всего</span>: <span id="totalCount">0</span>
@@ -1318,25 +1319,29 @@
                 http: {
                     description: {
                         ru: 'HTTP (HyperText Transfer Protocol) — основной протокол передачи данных в интернете. Используется для загрузки веб-страниц, API-запросов и обмена данными между клиентом и сервером. Подходит для парсинга, сканирования, тестирования и автоматизации. Не шифрует трафик, что делает его быстрым, но менее безопасным.',
-                        en: 'HTTP (HyperText Transfer Protocol) — the core protocol for data transfer on the web. Used for loading web pages, API requests, and data exchange between client and server. Suitable for crawling, scanning, testing, and automation. Does not encrypt traffic, making it fast but less secure.'
+                        en: 'HTTP (HyperText Transfer Protocol) — the core protocol for data transfer on the web. Used for loading web pages, API requests, and data exchange between client and server. Suitable for crawling, scanning, testing, and automation. Does not encrypt traffic, making it fast but less secure.',
+                        zh: 'HTTP（超文本传输协议）—— 互联网上数据传输的核心协议。用于加载网页、API 请求以及客户端与服务器之间的数据交换。适用于爬虫、扫描、测试和自动化。不对流量加密，因此速度快但安全性较低。'
                     }
                 },
                 https: {
                     description: {
                         ru: 'HTTPS (HTTP Secure) — защищённая версия HTTP, использующая шифрование TLS/SSL. Обеспечивает конфиденциальность и целостность данных. Рекомендуется для работы с чувствительной информацией, банковскими транзакциями, авторизацией и любыми задачами, требующими безопасности.',
-                        en: 'HTTPS (HTTP Secure) — the secure version of HTTP, using TLS/SSL encryption. Ensures confidentiality and data integrity. Recommended for handling sensitive information, banking transactions, authorization, and any tasks requiring security.'
+                        en: 'HTTPS (HTTP Secure) — the secure version of HTTP, using TLS/SSL encryption. Ensures confidentiality and data integrity. Recommended for handling sensitive information, banking transactions, authorization, and any tasks requiring security.',
+                        zh: 'HTTPS（安全超文本传输协议）—— HTTP 的安全版本，使用 TLS/SSL 加密。确保数据的机密性和完整性。推荐用于处理敏感信息、银行交易、身份验证以及任何需要安全性的任务。'
                     }
                 },
                 socks4: {
                     description: {
                         ru: 'SOCKS4 — прокси-протокол, работающий на уровне сеанса. Поддерживает TCP-соединения, не поддерживает UDP и аутентификацию. Подходит для обхода сетевых ограничений, маршрутизации трафика через промежуточные узлы. Простой и быстрый, но менее безопасный, чем SOCKS5.',
-                        en: 'SOCKS4 — a session-level proxy protocol. Supports TCP connections, does not support UDP or authentication. Suitable for bypassing network restrictions, routing traffic through intermediate nodes. Simple and fast, but less secure than SOCKS5.'
+                        en: 'SOCKS4 — a session-level proxy protocol. Supports TCP connections, does not support UDP or authentication. Suitable for bypassing network restrictions, routing traffic through intermediate nodes. Simple and fast, but less secure than SOCKS5.',
+                        zh: 'SOCKS4 —— 会话层代理协议。支持 TCP 连接，不支持 UDP 和身份验证。适用于绕过网络限制、通过中间节点路由流量。简单快速，但安全性不如 SOCKS5。'
                     }
                 },
                 socks5: {
                     description: {
                         ru: 'SOCKS5 — улучшенная версия SOCKS4, поддерживающая UDP, аутентификацию (включая GSS-API) и IPv6. Более гибкий и безопасный протокол. Позволяет маршрутизировать любой тип трафика, включая DNS-запросы через прокси. Широко используется для анонимизации и обхода блокировок.',
-                        en: 'SOCKS5 — an enhanced version of SOCKS4, supporting UDP, authentication (including GSS-API), and IPv6. More flexible and secure. Allows routing any type of traffic, including DNS queries through the proxy. Widely used for anonymization and bypassing restrictions.'
+                        en: 'SOCKS5 — an enhanced version of SOCKS4, supporting UDP, authentication (including GSS-API), and IPv6. More flexible and secure. Allows routing any type of traffic, including DNS queries through the proxy. Widely used for anonymization and bypassing restrictions.',
+                        zh: 'SOCKS5 —— SOCKS4 的增强版本，支持 UDP、身份验证（包括 GSS-API）和 IPv6。更灵活、更安全。可以路由任何类型的流量，包括通过代理进行 DNS 查询。广泛用于匿名化和绕过限制。'
                     }
                 }
             };
@@ -1391,10 +1396,64 @@
                     disclaimer: 'I do not guarantee performance — I just parse ready filtered lists from sites.',
                     filters_toggle: 'Filters',
                     page: 'page',
+                },
+                zh: {
+                    subtitle: '普通 IP 地址不应付费。',
+                    total: '总计',
+                    protocols: '协议',
+                    search_placeholder: '按 IP 或协议搜索',
+                    copy_all: '复制全部',
+                    copy_page: '复制当前页',
+                    download_page: '下载当前页',
+                    per_page: '每页',
+                    address: '地址',
+                    protocol: '协议',
+                    copy: '复制',
+                    loading: '正在加载代理...',
+                    prev: '上一页',
+                    next: '下一页',
+                    copied: '已复制',
+                    copy_error: '复制失败',
+                    no_proxies: '没有数据。请确认代理文件是否存在。',
+                    empty_filter: '所选协议没有代理。',
+                    footer_text: '网站由以下作者制作：',
+                    credit_text: '网页界面完全由以下编写：',
+                    disclaimer: '我不保证可用性 —— 只是从网站上解析现成的已过滤列表。',
+                    filters_toggle: '筛选',
+                    page: '页',
                 }
             };
 
+            const LANG_STORAGE_KEY = 'selectedLang';
+            const SUPPORTED_LANGS = ['ru', 'en', 'zh'];
+
             let currentLang = 'ru';
+
+            function getSavedLang() {
+                try {
+                    const saved = localStorage.getItem(LANG_STORAGE_KEY);
+                    if (saved && SUPPORTED_LANGS.includes(saved)) return saved;
+                } catch (e) {
+                }
+                return null;
+            }
+
+            function saveLang(lang) {
+                try {
+                    localStorage.setItem(LANG_STORAGE_KEY, lang);
+                } catch (e) {
+                }
+            }
+
+            function detectDefaultLang() {
+                const saved = getSavedLang();
+                if (saved) return saved;
+                const nav = (navigator.language || navigator.userLanguage || 'ru').toLowerCase();
+                if (nav.startsWith('zh')) return 'zh';
+                if (nav.startsWith('en')) return 'en';
+                if (nav.startsWith('ru')) return 'ru';
+                return 'ru';
+            }
 
             function t(key) {
                 return LANG[currentLang] && LANG[currentLang][key] ? LANG[currentLang][key] : key;
@@ -1814,8 +1873,10 @@
                 showToast(t('copied') + ' ' + lines.length + ' (' + t('page') + ' ' + currentPage + ')', 'success');
             }
 
-            function setLang(lang) {
+            function setLang(lang, persist) {
+                if (!SUPPORTED_LANGS.includes(lang)) lang = 'ru';
                 currentLang = lang;
+                if (persist !== false) saveLang(lang);
                 document.querySelectorAll('.lang-switch button').forEach(btn => {
                     btn.classList.toggle('active', btn.dataset.lang === lang);
                 });
@@ -1887,7 +1948,9 @@
                 }
             });
 
-            updateI18n();
+            currentLang = detectDefaultLang();
+
+            setLang(currentLang, false);
 
             initFiltersVisibility();
 
