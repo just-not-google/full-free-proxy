@@ -37,8 +37,6 @@
             --socks5-color: #7C3AED;
             --socks5-bg: #EDE9FE;
             --success: #10B981;
-
-            /* единые размеры кнопок */
             --btn-min-width: 110px;
             --btn-height: 36px;
             --btn-radius: 30px;
@@ -167,7 +165,6 @@
             font-weight: 700;
         }
 
-        /* ===== кнопка переключения фильтров ===== */
         .toggle-filters-btn {
             background: none;
             border: 1px solid var(--border);
@@ -217,7 +214,6 @@
             border-radius: var(--radius-sm);
         }
 
-        /* ===== группа фильтров протоколов ===== */
         .filter-group {
             display: flex;
             flex-wrap: wrap;
@@ -236,7 +232,6 @@
             flex-shrink: 0;
         }
 
-        /* ===== кнопки-переключатели протоколов ===== */
         .proto-toggle {
             display: inline-flex;
             align-items: center;
@@ -315,7 +310,6 @@
             opacity: 0.6;
         }
 
-        /* ===== блок действий ===== */
         .actions {
             display: flex;
             gap: 8px;
@@ -505,7 +499,6 @@
             color: var(--socks5-color);
         }
 
-        /* ===== кнопка копирования в списке ===== */
         .copy-btn {
             justify-self: end;
             background: none;
@@ -566,7 +559,6 @@
             }
         }
 
-        /* ===== пагинация ===== */
         .pagination {
             display: flex;
             flex-wrap: wrap;
@@ -654,6 +646,42 @@
             opacity: 0.7;
         }
 
+        .footer .credit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .footer .credit-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 3px 12px;
+            border-radius: 40px;
+            border: 1px solid transparent;
+            transition: 0.2s;
+            line-height: 1;
+        }
+        .footer .credit-link:hover {
+            border-color: var(--border);
+            background: var(--bg);
+            color: var(--text);
+            text-decoration: none;
+        }
+        .footer .credit-name {
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            color: #4D6BFE;
+        }
+        .footer .credit-link:hover .credit-name {
+            color: #3B57E8;
+        }
+
         .toast {
             position: fixed;
             bottom: 30px;
@@ -686,7 +714,6 @@
             background: #991B1B;
         }
 
-        /* ===== Мобильная оптимизация ===== */
         @media (max-width: 820px) {
             .app {
                 padding: 18px 16px 28px;
@@ -868,6 +895,14 @@
             .footer .disclaimer {
                 font-size: 0.8rem;
             }
+
+            .proxy-list {
+                max-height: 500px;
+                -webkit-overflow-scrolling: touch;
+            }
+            .proxy-item {
+                will-change: transform;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1034,6 +1069,9 @@
             .footer .disclaimer {
                 font-size: 0.7rem;
             }
+            .footer .credit {
+                font-size: 0.8rem;
+            }
 
             .toast {
                 font-size: 0.8rem;
@@ -1053,17 +1091,6 @@
             }
         }
 
-        @media (max-width: 820px) {
-            .proxy-list {
-                max-height: 500px;
-                -webkit-overflow-scrolling: touch;
-            }
-            .proxy-item {
-                will-change: transform;
-            }
-        }
-
-        /* маленькие экраны — особо узкие */
         @media (max-width: 380px) {
             .proto-toggle {
                 min-width: 58px;
@@ -1188,7 +1215,6 @@
             </div>
         </header>
 
-        <!-- Обёртка для фильтров и информации о протоколе -->
         <div class="filters-wrapper" id="filtersWrapper">
             <div class="filters" id="filtersPanel">
                 <div class="filter-group" id="protocolFilters">
@@ -1215,7 +1241,6 @@
                 </div>
             </div>
 
-            <!-- Блок информации о протоколе (без приложений) -->
             <div class="protocol-info" id="protocolInfo">
                 <div class="info-title" id="infoTitle">HTTP</div>
                 <div class="info-desc" id="infoDesc">...</div>
@@ -1247,6 +1272,18 @@
                 <span data-i18n="footer_text">Сайт был сделан</span>
                 <a href="https://github.com/just-not-google" target="_blank" rel="noopener noreferrer">just-not-google</a>
             </div>
+
+            <div class="credit">
+                <span data-i18n="credit_text">Веб-интерфейс написан полностью</span>
+                <a class="credit-link"
+                   href="https://huggingface.co/deepseek-ai"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   title="DeepSeek-Coder — Hugging Face">
+                    <span class="credit-name">DeepSeek-Coder</span>
+                </a>
+            </div>
+
             <div class="disclaimer" data-i18n="disclaimer">За работоспособность не отвечаю — просто парсю готовые отфильтрованные списки с сайтов.</div>
         </div>
 
@@ -1277,7 +1314,6 @@
                 socks5: 'socks5',
             };
 
-            // Описания протоколов (без приложений)
             const PROTOCOL_INFO = {
                 http: {
                     description: {
@@ -1305,7 +1341,6 @@
                 }
             };
 
-            // ----- i18n -----
             const LANG = {
                 ru: {
                     subtitle: 'Обычные IP-адреса не должны быть платными.',
@@ -1327,8 +1362,10 @@
                     no_proxies: 'Нет данных. Убедитесь, что файлы прокси существуют.',
                     empty_filter: 'Нет прокси для выбранного протокола.',
                     footer_text: 'Сайт был сделан',
+                    credit_text: 'Веб-интерфейс написан полностью',
                     disclaimer: 'За работоспособность не отвечаю — просто парсю готовые отфильтрованные списки с сайтов.',
                     filters_toggle: 'Фильтры',
+                    page: 'страница',
                 },
                 en: {
                     subtitle: 'Regular IP addresses should not be paid for.',
@@ -1350,8 +1387,10 @@
                     no_proxies: 'No data. Make sure proxy files exist.',
                     empty_filter: 'No proxies for selected protocol.',
                     footer_text: 'Site made by',
+                    credit_text: 'Web interface fully written by',
                     disclaimer: 'I do not guarantee performance — I just parse ready filtered lists from sites.',
                     filters_toggle: 'Filters',
+                    page: 'page',
                 }
             };
 
@@ -1372,7 +1411,6 @@
                 });
             }
 
-            // ----- state -----
             let allProxies = [];
             let filteredProxies = [];
             let activeProtocol = 'http';
@@ -1420,7 +1458,6 @@
                 }, 2200);
             }
 
-            // ----- Toggle filters -----
             function toggleFilters(show) {
                 if (show === undefined) {
                     const isHidden = $filtersWrapper.classList.contains('filters-wrapper-hidden');
@@ -1446,7 +1483,6 @@
                 }
             }
 
-            // ----- Render protocol info -----
             function renderProtocolInfo(protocol) {
                 const info = PROTOCOL_INFO[protocol];
                 if (!info) {
@@ -1460,7 +1496,6 @@
                 $infoDesc.textContent = info.description[lang] || info.description.ru;
             }
 
-            // ----- load proxies -----
             async function loadAllProxies() {
                 allProxies = [];
                 renderLoading();
@@ -1499,7 +1534,6 @@
                             });
                         }
                     } catch (e) {
-                        // ignore
                     }
                 }
 
@@ -1678,7 +1712,6 @@
                 });
             }
 
-            // ----- copy / download functions -----
             function copyToClipboard(text, btnElement) {
                 if (!text) return;
                 const doCopy = (str) => {
@@ -1752,8 +1785,7 @@
                 const text = lines.join('\n');
                 if (navigator.clipboard && navigator.clipboard.writeText) {
                     navigator.clipboard.writeText(text).then(() => {
-                        showToast(t('copied') + ' ' + lines.length + ' ' + t('protocols').toLowerCase() + ' (' + t(
-                            'page') + ')', 'success');
+                        showToast(t('copied') + ' ' + lines.length + ' ' + t('protocols').toLowerCase() + ' (' + t('page') + ')', 'success');
                     }).catch(() => fallbackCopy(text));
                 } else {
                     fallbackCopy(text);
@@ -1779,10 +1811,9 @@
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-                showToast('Скачано ' + lines.length + ' прокси (страница ' + currentPage + ')', 'success');
+                showToast(t('copied') + ' ' + lines.length + ' (' + t('page') + ' ' + currentPage + ')', 'success');
             }
 
-            // ----- language -----
             function setLang(lang) {
                 currentLang = lang;
                 document.querySelectorAll('.lang-switch button').forEach(btn => {
@@ -1808,13 +1839,11 @@
                 });
             });
 
-            // ----- Toggle filters event -----
             $toggleFiltersBtn.addEventListener('click', function() {
                 const isHidden = $filtersWrapper.classList.contains('filters-wrapper-hidden');
                 toggleFilters(isHidden);
             });
 
-            // ----- events -----
             $search.addEventListener('input', function() {
                 currentPage = 1;
                 applyFiltersAndRender();
@@ -1858,7 +1887,6 @@
                 }
             });
 
-            // init i18n
             updateI18n();
 
             initFiltersVisibility();
