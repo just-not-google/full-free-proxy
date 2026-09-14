@@ -194,3 +194,97 @@ python -m github_raw
 - Библиотека `requests`
 
 </details>
+
+<details>
+<summary>🇨🇳 中文</summary>
+
+## 关于本项目
+
+本工具会自动从数十个维护代理列表的公开 GitHub 仓库中收集免费代理服务器。它会解析原始文本文件，按协议规范化条目，去除重复项，并输出干净的 HTTP、HTTPS、SOCKS4 和 SOCKS5 列表。
+
+我做这个工具是因为每次都要手动寻找可用的代理实在太烦了。它简单、快速，只把一件事做好 —— 正是我喜欢的风格。
+
+## 功能特性
+
+- 每个协议从 40+ 个 GitHub 原始来源聚合代理。
+- 支持 HTTP、HTTPS、SOCKS4 和 SOCKS5。
+- 自动从原始数据中去除协议前缀并添加正确的前缀。
+- 使用随机 HTTP 请求头和超时以避免被封禁。
+- 对所有代理去重，并保存为按协议划分的文件 + 合并的 `all.txt`。
+- 轻量且易于扩展。
+
+## 安装
+
+1. 克隆仓库：
+   ```bash
+   git clone https://github.com/just-not-google/full-free-proxy.git
+   cd proxy-aggregator
+   ```
+
+2. 安装所需的 Python 包：
+   ```bash
+   pip install requests
+   ```
+
+## 使用方法
+
+运行主脚本：
+```bash
+python -m github_raw
+```
+
+它将：
+- 从 `github_raw_url_list.py` 中定义的 URL 获取所有代理列表。
+- 处理每一行，去除已有的协议前缀并添加目标协议。
+- 将唯一的代理写入 `http.txt`、`https.txt`、`socks4.txt`、`socks5.txt`。
+- 将所有唯一的代理（无论协议）写入 `all.txt`。
+
+## 项目结构
+
+```
+├── parsers/
+│   ├── __init__.py
+│   ├── github_raw_url_list.py     # 包含按协议分组的所有 GitHub 原始 URL
+│   ├── template_requests.py       # 带随机请求头和超时的 HTTP 请求处理器
+│   └── data/
+│       ├── __init__.py            # 导出常量
+│       ├── header_list.py         # 逼真的浏览器请求头列表
+│       ├── main_constants.py      # 超时范围
+│       ├── protocols.py           # 协议字符串常量
+│       ├── protocol_names.py      # 协议 -> 输出文件名的映射
+│       └── replace_proxy.py       # 控制是否去除前缀（始终为 True）
+├── github_raw.py                  # 主逻辑：获取并处理列表
+```
+
+## 配置
+
+- **添加或删除来源**：编辑 `github_raw_url_list.py` —— 每个键是一个协议（`HTTP_PROTOCOL` 等），值是原始 GitHub URL 的列表。
+- **修改输出文件名**：修改 `protocol_names.py`。
+- **调整超时**：修改 `main_constants.py` 中的 `MIN_TIMEOUT` 和 `MAX_TIMEOUT`。
+- **禁用前缀替换**：在 `replace_proxy.py` 中设置 `REPLACE_PROXY[protocol] = False`。
+
+## 网站
+
+一个极简但同样易用的网站，通过 GitHub Actions 自动更新。没有多余的东西，以免分散对核心内容的注意力 —— 也就是 IP 代理。
+
+<p align="center">
+  <img src="imgs/ui.png" width="80%" alt="Proxy UI Screenshot" />
+</p>
+
+## 输出文件
+
+执行后，项目根目录下将创建以下文件：
+- `http.txt`   – HTTP 代理（格式：`http://ip:port`）
+- `https.txt`  – HTTPS 代理（`https://ip:port`）
+- `socks4.txt` – SOCKS4 代理（`socks4://ip:port`）
+- `socks5.txt` – SOCKS5 代理（`socks5://ip:port`）
+- `all.txt`    – 所有协议的去重代理，已排序。
+
+每个文件每行包含一个代理。
+
+## 依赖
+
+- Python 3.6+
+- `requests` 库
+
+</details>
