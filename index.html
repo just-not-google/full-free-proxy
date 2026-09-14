@@ -453,7 +453,6 @@
             gap: 6px;
             transition: 0.15s;
             font-size: 0.9rem;
-            will-change: transform;
             min-height: 48px;
         }
         .proxy-item:last-child {
@@ -937,9 +936,6 @@
                 max-height: 500px;
                 -webkit-overflow-scrolling: touch;
             }
-            .proxy-item {
-                will-change: transform;
-            }
         }
 
         @media (max-width: 480px) {
@@ -1127,9 +1123,6 @@
             .proxy-list {
                 max-height: 400px;
                 -webkit-overflow-scrolling: touch;
-            }
-            .proxy-item {
-                will-change: transform;
             }
         }
 
@@ -1330,10 +1323,11 @@
             <div class="disclaimer" data-i18n="disclaimer">За работоспособность не отвечаю — просто парсю готовые отфильтрованные списки с сайтов.</div>
         </div>
 
-        <div class="toast" id="toast">
-            <span id="toastText"></span>
-            <button class="toast-close" id="toastClose" aria-label="Close">✕</button>
-        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <span id="toastText"></span>
+        <button class="toast-close" id="toastClose" aria-label="Close">✕</button>
     </div>
 
     <script>
